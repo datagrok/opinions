@@ -102,6 +102,8 @@ While accepting that there's nothing short of DRM schemes that one could use to 
 
 Corollary: how do we perform the "similar people" calculation across unknown parts of the network and not just one's known peers without revealing "friends-only" opinions?
 
+Opinion forwarding?
+
 Aggregation services? Though the goal is to be distributed, having an open platform for which an aggregation service is optional, and for which no single aggregation service can "take over," can be useful. C.f. git vs. GitHub; RSS vs. Google Reader.
 
 Query forwarding like [gnutella][]?
