@@ -2,9 +2,13 @@ This document serves to record the rationale behind decisions made during the de
 
 # A Distributed Network of Metrics
 
-Various software, in the form of applications and web services, collect opinions.
+Various pieces of software, in the form of applications and web services, collect opinions. 
 
-## Problems
+- Reddit and Digg collect opinions about URLs in the form of up- or down-votes. They also collect opinions about comments made in their comment system in the same way. Slashdot has a slightly more granular metric but is essentially the same.
+
+- Google Plus and Facebook collect opinions about URLs in the form of "Like"s or "+1"s.
+
+## Problems we try to solve
 
 ### Only one metric for "good."
 
@@ -36,9 +40,9 @@ Guilty: OKCupid, Netflix, Reddit, Digg, Slashdot, Google Plus, Facebook, ...
 
 In almost all of these systems, the data is locked up. We couldn't fix the problems or run our own calculation algorithms across it if we wanted to.
 
-### Only one metric for "trust."
+### Ambiguous metrics.
 
-Guilty: PGP
+Guilty: PGP and other cryptosystems' metric of "trust."
 
 When using a public key cryptosystem like PGP, does "trust" mean "I am certain this is Alice's key" or "I am certain that Alice knows what she's doing when she authenticates someone else's key"? What if the subject is not keys but messages? Does trust mean "I am certain Alice wrote this" (it sounds just like her!) or, "I am certain that noone could possibly have modified a message that Alice wrote before it reached me"?
 
