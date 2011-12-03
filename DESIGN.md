@@ -2,44 +2,49 @@ This document serves to record the rationale behind decisions made during the de
 
 # A Distributed Network of Metrics
 
+Various software, in the form of applications and web services, collect opinions.
+
 ## Problems
 
-#### Reddit, Digg, Slashdot, Google Plus, Facebook
+### Only one metric for "good."
 
-and almost every other "social" site ever created:
+Guilty: Reddit, Digg, Slashdot, Google Plus, Facebook and almost every other "social" site ever created.
 
-- There is only one, poorly-defined metric for "good." (Votes)
-- The algorithm for calculating a score from that metric is extremely naive. (Popularity)
+Many users may rank as "good" articles or statements whose opinions they agree with, regardless of their quality. Is an article informative but poorly-written? Exciting but poorly researched? Does a particular movie have a great story but horrible acting?
 
-For those sites, as their communities get larger, minority interests and opinions become excluded.
+### Extremely naive algorithm (popular vote) for calculating score from "goodness" metric.
 
-I want a social news site where both a religious neo-conservative Republican and a far-left liberal pacifist atheist socialist can find recommended to them links that they would consider "good" and comments that they would not necessarily agree with, but consider on-topic or well-informed.
+Guilty: Reddit, Digg, Slashdot, Google Plus, Facebook, etc...
 
-#### OKCupid, Netflix
+For these sites, as their communities get larger, minority interests and opinions become excluded. The winningest content is that with the most votes, even if the content is highly desirable to a subset of the users. The site "descends into mediocrity."
 
-- Specific to a single topic.
+I want a social news site where both a religious neo-conservative Republican and a far-left liberal pacifist atheist socialist can find recommended to them links that they would consider "good" and comments that they would not necessarily agree with, but would consider on-topic and/or well-informed.
 
-OKCupid and Netflix are the rare examples of sites that have effective solutions for the problems mentioned above for Reddit etc.
+### Limited to a single topic.
 
-OKCupid implements a free-form unlimited-number of metrics and has a good (albeit proprietary) algorithm for clustering based on that metric. Unfortunately, they are specific to online dating.
+Guilty: OKCupid, Netflix
 
-Netflix has a well-defined metric for "good" (albeit only one) and a famously good (and public) algorithm for calculating a score. Unfortunately, they are specific to rating movies.
+OKCupid and Netflix are the rare examples of sites that have effective solutions for the problems mentioned above with Reddit and others.
 
-#### PGP
+OKCupid implements a free-form unlimited-number of metrics and has a good (albeit proprietary) algorithm for clustering based on that metric. Unfortunately, all of their metrics and analyses are specific to online dating.
 
-- Only one metric for "trust."
+Netflix has a well-defined metric for "good" (albeit only one) and a famously good (and public) algorithm for calculating a score. Unfortunately, the data they collect is specific to rating movies.
 
-Does "trust" mean "I am certain this is Alice's key" or "I am certain that Alice knows what she's doing when she authenticates someone else's key"?
+### Proprietary, closed database
 
-#### OKCupid, Netflix, Reddit, Digg, Slashdot, Google Plus, Facebook, ...
-
-- Proprietary, closed database
+Guilty: OKCupid, Netflix, Reddit, Digg, Slashdot, Google Plus, Facebook, ...
 
 In almost all of these systems, the data is locked up. We couldn't fix the problems or run our own calculation algorithms across it if we wanted to.
 
-#### Facebook and Google Plus
+### Only one metric for "trust."
 
-- The "real name" initiative, aka [Nymwars][]
+Guilty: PGP
+
+When using a public key cryptosystem like PGP, does "trust" mean "I am certain this is Alice's key" or "I am certain that Alice knows what she's doing when she authenticates someone else's key"? What if the subject is not keys but messages? Does trust mean "I am certain Alice wrote this" (it sounds just like her!) or, "I am certain that noone could possibly have modified a message that Alice wrote before it reached me"?
+
+### The "real name" initiative, aka [Nymwars][]
+
+Guilty: Facebook and Google Plus
 
 Many social media sites and pundits insist that one must use their real name in their online persona. At the very least, this is an assault on the freedoms of speech and expression.
 
@@ -49,7 +54,7 @@ Many social media sites and pundits insist that one must use their real name in 
 
 ## Toward a solution
 
-Let's create a system that can collect opinions about things.
+Let's create a system that can collect opinions about things while solving those problems.
 
 Opinions like:
 
@@ -61,36 +66,83 @@ Opinions like:
 - This restaurant has decent prices.
 - I think a government should tax minimally and stay out of people's affairs.
 - I think a government should provide free health care for its citizens.
+- This metric is well-worded.
 
-Opinions are described by a scalar rating according to some metric. Metrics could be anything; let's not limit them. Let's simply say that a metric is a description of the scale used by the scalar. Things could be anything; real things, web sites, people, avatars or public keys that represent people, etc.
+More specifically, let's create a protocol for the exchange of abstract opinion data, and a couple proof-of-concept applications that can speak that protocol.
+
+Opinions are described by a scalar rating according to some _metric_. Metrics could be anything; let's not limit them. Let's simply say that a metric is a description of the scale used by the scalar. Things could be anything; real things, web sites, people, avatars or public keys that represent people, etc.
 
 	(Thing, Metric, Rating)
 
-To limit the amount of data we have to work with and defer decisions about ontology, let's use URIs to refer to the actual values Things and Metrics. But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes, so let's store the hash values for Things and Metrics.
+It should be possible to convey someone else's opinion, so we need to inlcude the Principal (the "I" in "I think _Thing_ has a rating of _Rating_ according to _Metric_".)
 
-	(H(Thing), H(Metric), Rating)
+	(Principal, Thing, Metric, Rating)
+
+
+Particular Things and Metrics may become very popular. (Consider hit movies, virally popular internet content. Also consider very well-worded and general Metrics which apply to many classes of Things.)
+
+To limit the amount of data we have to work with and defer decisions about ontology, we can store the full values for Principals, Things, and Metrics elsewhere and merely reference them from the opinion tuple. URIs might work well for this purpose.
+
+But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes, so let's store the hash values of the content, not the URI, of Things and Metrics.
+
+	(H(Principal), H(Thing), H(Metric), Rating)
+
+Clients will probably as a convenience provide a mapping of hash values to contents, or a description of how to obtain the contents (URIs should work well here.) This may however be outside the scope of the basic protocol.
+
 	URIs = {
-		H(Thing): http://...../
-		H(Metric): http://...../
+		H(Thing): "http://.../",
+		H(Metric): "http://.../",
+		H(Thing): "file://.../",
+		H(Metric): "...(actual metric data)...",
 	}
 
-We wouldn't want an impostor to express fake opinions in our name, so let's sign the data. Also, opinions may change over time, so let's include a timestamp.
+Opinions may change over time, so let's include a timestamp.
 
-	(H(Thing), H(Metric), Rating, timestamp, S((H(Thing), H(Metric), Rating, timestamp)))
+	(H(Principal), H(Thing), H(Metric), Rating, Time)
+
+We want to allow for peers and aggregation services to distribute our opinions to others, but we wouldn't want an impostor to express fake opinions in our name. So, let's sign the data.
+
+A signature will not validate without the correct public key, so including the Principal in the signed data is redundant.
+
+	Understanding that SIGNED(x) means (x, SIGNATURE(x)),
+
+	(H(Principal), SIGNED(H(Thing), H(Metric), Rating, Time))
+
+TODO: check my crypto textbooks: is it safe to omit the Principal from the signature leave the signer out of the signed document?
 
 ## Use cases / stories
 
+## Proof-of-concept implementation goals (?)
+
+- Protocol description
+- Libraries for manipulating and exchanging opinion data in Python and C
+- A social-news site founded on opinion data
+- A simple movie rankings database founded on opinion data
+- An opinions aggregation and distribution service
+- Clients might be seeded with a set of good or popular Metrics
+
 ## Questions
+
+### Similarities and differences with RDF
+
+TODO
+
+	Opinions: (Principal):±² (Thing, Metric, Value)
+
+	RDF: (Thing, Thing, Relationship)
+
+- RDF data may be free-form and extensive. An opinion is a tiny nugget of data.
+
+TODO
 
 ### How should we store this data locally? What are the space and bandwidth requirements?
 
-- Hashes will likely be fixed-bitlength; sha1 is 160 bits. 
+- Hashes will likely be fixed-bitlength; sha1 is 160 bits.
 - Values could be a simple 8-bit byte; for metrics requiring only a boolean would use 0 for false/disagree and 255 for true/agree.
 - Signatures vary but would likely require the same space as a hash plus perhaps another hash corresponding to a public key.
 - Timestamps could be TAI64; 64 bits.
 - Maps from hash values to URIs could live in any key-value store.
-
-*Conclusion:* Let's use SQLite for the whole thing.
+- For the protocol design we need not worry too much about storage details. But consider them anyway to avoid design mistakes.
 
 ### How do we selectively distribute opinions?
 
