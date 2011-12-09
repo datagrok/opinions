@@ -8,6 +8,12 @@ Various pieces of software, in the form of applications and web services, collec
 
 - Google Plus and Facebook collect opinions about URLs in the form of "Like"s or "+1"s.
 
+- Amazon, NewEgg, and Netflix collect opinions about products or movies in the form of rankings between 1 to 5.
+
+- OkCupid collects opinions in the form of responses to an open-ended database of multiple-choice questions.
+
+- Most opinion surveys may ask responders to rate their agreement according to a [Likert scale][] of "Disagree" vs. "Neither Agree nor Disagree" vs. "Agree."
+
 ## Problems we try to solve
 
 ### Only one metric for "good."
@@ -38,7 +44,7 @@ Netflix has a well-defined metric for "good" (albeit only one) and a famously go
 
 Guilty: OKCupid, Netflix, Reddit, Digg, Slashdot, Google Plus, Facebook, ...
 
-In almost all of these systems, the data is locked up. We couldn't fix the problems or run our own calculation algorithms across it if we wanted to.
+In almost all of these systems, the data is locked up. We couldn't fix the problems or run our own calculation algorithms across it if we wanted to. If you spend an hour responding to an opinion survey, you have no ability to save those responses to answer similar questions on other or future surveys.
 
 ### Ambiguous metrics.
 
@@ -51,6 +57,8 @@ When using a public key cryptosystem like PGP, does "trust" mean "I am certain t
 Guilty: Facebook and Google Plus
 
 Many social media sites and pundits insist that one must use their real name in their online persona. At the very least, this is an assault on the freedoms of speech and expression.
+
+Strong PGP-style cryptography is a sufficent solution to this problem. Implemented with a PKI and signatures, it enables avatars to earn reputation, discouraging and enabling others to filter away "throwaway" avatars, while providing plausible deniability and protecting users.
 
 [JWZ on Nym Wars](http://www.jwz.org/blog/2011/08/nym-wars/)
 
@@ -131,7 +139,7 @@ TODO: check my crypto textbooks: is it safe to omit the Principal from the signa
 
 TODO
 
-	Opinions: (Principal):±² (Thing, Metric, Value)
+	Opinions: (Principal): (Thing, Metric, Value)
 
 	RDF: (Thing, Thing, Relationship)
 
@@ -190,7 +198,19 @@ For any given clustering algorithm, it would be useful to distribute the computa
 
 Polling? Publish/subscribe among peers? Revocation lists ala PGP?
 
+### How do we deal with problems inherent in [Likert scale][] items?
+
+Many metrics will take on the form of a Likert item. From the Wikipedia article on the Likert scale,
+
+	"Respondents may avoid using extreme response categories (central tendency bias); agree with statements as presented (acquiescence bias); or try to portray themselves or their organization in a more favorable light (social desirability bias)."
+
+- To deal with acquiescence bias, perhaps information could be encoded into some metrics that let clients know how to present the negation of a given metric.
+- Hopefully the ability to create pseudononymous avatars will reduce the tendency for social desirability bias.
+- How do we deal with central tendency bias? Extra descriptive text that clearly defines the feeling one might have upon selecting a particular value?
+
 ## Related Reading
 
 - [Attack Resistant Trust Metrics, Raph Levien](http://www.levien.com/thesis/compact.pdf)
 - [Advogato's Trust Metric](http://advogato.org/trust-metric.html)
+
+[Likert scale]: http://en.wikipedia.org/wiki/Likert_scale "Wikipedia: Likert scale"
