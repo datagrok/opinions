@@ -26,7 +26,7 @@ Many users may rank as "good" articles or statements whose opinions they agree w
 
 Guilty: Reddit, Digg, Slashdot, Google Plus, Facebook, etc...
 
-For these sites, as their communities get larger, minority interests and opinions become excluded. The winningest content is that with the most votes, even if the content is highly desirable to a subset of the users. The site "descends into mediocrity."
+For these sites, as their communities get larger, minority interests and opinions become excluded. The winningest content is that with the most votes, even if less-generally-popular content is highly desirable to a subset of the users. The site "descends into mediocrity."
 
 I want a social news site where both a religious neo-conservative Republican and a far-left liberal pacifist atheist socialist can find recommended to them links that they would consider "good" and comments that they would not necessarily agree with, but would consider on-topic and/or well-informed.
 
@@ -48,9 +48,11 @@ In almost all of these systems, the data is locked up. We couldn't fix the probl
 
 ### Ambiguous metrics.
 
-Guilty: PGP and other cryptosystems' metric of "trust."
+Guilty: PGP and other cryptosystems' metric of "trust." Reddit's "upvote."
 
 When using a public key cryptosystem like PGP, does "trust" mean "I am certain this is Alice's key" or "I am certain that Alice knows what she's doing when she authenticates someone else's key"? What if the subject is not keys but messages? Does trust mean "I am certain Alice wrote this" (it sounds just like her!) or, "I am certain that noone could possibly have modified a message that Alice wrote before it reached me"?
+
+Reddit [takes great pains to insist](http://www.reddit.com/help/reddiquette) that "The down [vote] is for comments that add nothing to the discussion." However, the downvote has a different meaning for articles. Many users simply ignore this advice, making it a perpetual source of contention and repetitous discussion.
 
 ### The "real name" initiative, aka [Nymwars][]
 
@@ -127,25 +129,34 @@ TODO: check my crypto textbooks: is it safe to omit the Principal from the signa
 ## Proof-of-concept implementation goals (?)
 
 - Protocol description
-- Libraries for manipulating and exchanging opinion data in Python and C
+	- Driven by proof-of-concept implementation -- decisions in protocol should
+	  be resolved in favor of what makes for the easiest implementation.
+- Libraries for manipulating and exchanging opinion data in Python (and C?)
 - A social-news site founded on opinion data
 - A simple movie rankings database founded on opinion data
 - An opinions aggregation and distribution service
 - Clients might be seeded with a set of good or popular Metrics
+	- Movies
+	- MetaMetrics -- "This metric is unbiased" "This metric is generally useful" etc.
+	- Political stance; encode all questions from [The Political Compass][]
+	- Personality traits such as those for calculating the [Myers-Briggs Type Indicator][] or the [Keirsey Temperament Sorter][]
+- A client for importing and managing a corpus of opinions
 
 ## Questions
 
 ### Similarities and differences with RDF
 
-TODO
+RDF data entities (called RDF "triples") are composed of subject-predicate-object, like "Bob is 35 (years old)" or "Bob knows Fred."
 
-	Opinions: (Principal): (Thing, Metric, Value)
+Opinion data entities are composed of subject-object-metric-value-signature, where subject is implied and always "I". It may be possible to procedurally encode Opinions into RDF, perhaps for storage into a high-performance [Triplestore][].
 
-	RDF: (Thing, Thing, Relationship)
+RDF data seems to be assumed to be factual; dealing with conflicting statements represented in RDF seems out-of-scope for the system. Authenticity seems to be out-of-scope as well. (FIXME I haven't actually read the specs, verify that I'm not completely making things up here.)
 
-- RDF data may be free-form and extensive. An opinion is a tiny nugget of data.
+Opinions are assumed to be just that: opinions, which may not be objective statements of truth. Thus it is important to bind opinions to the principals who issue them, and give consideration to how to present conflicting opinions.
 
-TODO
+- Opinions may(?) be encoded in RDF. (And many other data formats, as opinions are merely tuples. XML, RSS, HTML as a [MicroFormat][], etc.)
+
+FIXME further study and elaboration. Possible of opinions to build on the existing mountain of RDF work without embracing its complexity and giant specifications?
 
 ### How should we store this data locally? What are the space and bandwidth requirements?
 
@@ -162,19 +173,13 @@ I might not want to expose certain sets of opinions to certain people. How do we
 
 While accepting that there's nothing short of DRM schemes that one could use to *force* trusted peers not to redistribute their opinion, what methods could one employ to *request* that they do not?
 
-### How do we calculate "similar people"? How do we discover new people?
+### How do we discover new people?
 
-Corollary: how do we perform the "similar people" calculation across unknown parts of the network and not just one's known peers without revealing "friends-only" opinions?
-
-Opinion forwarding?
+Opinion forwarding? This might imply that each client node on the network might need to store a copy of all opinion data for every other node it ever interacts with. This might be too heavy of a data load for clients. Maybe clients only store opinion data for metrics they have employed? Maybe clients only tak
 
 Aggregation services? Though the goal is to be distributed, having an open platform for which an aggregation service is optional, and for which no single aggregation service can "take over," can be useful. C.f. git vs. GitHub; RSS vs. Google Reader.
 
-Query forwarding like [gnutella][]?
-
-[gnutella]: http://en.wikipedia.org/wiki/Gnutella "Wikipedia: Gnutella"
-
-### How do we determine the "network's opinion"?
+### How do we determine the "network's opinion"? How do we determine "similar people's opinion?" How do we calculate who is "similar"?
 
 Various approaches are possible. One that I would like to see is: calculate a weighted average of other people's opinions for a given Thing, where higher weight is given to people calculated (by their other opinions) to be "similar to me." Allow the user to dig in and examine the frequency distribution of opinions, etc.
 
@@ -186,9 +191,17 @@ Investigate the various techniques employed by [Netflix Prize][] winners.
 
 [Netflix Prize]: http://en.wikipedia.org/wiki/Netflix_Prize "Wikipedia: Netflix Prize"
 
+Algorithms may need to be _attack-resistant_, to make it difficult for one party to disproportionately influence the "network's opinion."
+
+### How do we perform the "similar people" calculation across unknown parts of the network and not just one's known peers, without revealing "friends-only" opinions?
+
+Query forwarding like [gnutella][]?
+
+[gnutella]: http://en.wikipedia.org/wiki/Gnutella "Wikipedia: Gnutella"
+
 ### Can we distribute a pre-calculated "network opinion" rating to peers?
 
-For any given clustering algorithm, it would be useful to distribute the computational load of the clustering algorithm across the network, where possible.
+For any given clustering algorithm, it would be useful to distribute the computational load of the clustering algorithm across the network, where possible. The most immediate concern is: how might we trust other nodes to return correct results?
 
 [Cluster Analysis]: http://en.wikipedia.org/wiki/Cluster_analysis "Wikipedia: Cluster analysis"
 
@@ -202,7 +215,7 @@ Polling? Publish/subscribe among peers? Revocation lists ala PGP?
 
 Many metrics will take on the form of a Likert item. From the Wikipedia article on the Likert scale,
 
-	"Respondents may avoid using extreme response categories (central tendency bias); agree with statements as presented (acquiescence bias); or try to portray themselves or their organization in a more favorable light (social desirability bias)."
+> "Respondents may avoid using extreme response categories (central tendency bias); agree with statements as presented (acquiescence bias); or try to portray themselves or their organization in a more favorable light (social desirability bias)."
 
 - To deal with acquiescence bias, perhaps information could be encoded into some metrics that let clients know how to present the negation of a given metric.
 - Hopefully the ability to create pseudononymous avatars will reduce the tendency for social desirability bias.
@@ -213,4 +226,9 @@ Many metrics will take on the form of a Likert item. From the Wikipedia article 
 - [Attack Resistant Trust Metrics, Raph Levien](http://www.levien.com/thesis/compact.pdf)
 - [Advogato's Trust Metric](http://advogato.org/trust-metric.html)
 
+[MicroFormat]: http://en.wikipedia.org/wiki/Microformat "Wikipedia: Microformat"
 [Likert scale]: http://en.wikipedia.org/wiki/Likert_scale "Wikipedia: Likert scale"
+[Triplestore]: http://en.wikipedia.org/wiki/Triplestore "Wikipedia: Triplestore"
+[The Political Compass]: http://www.politicalcompass.org
+[Myers-Briggs Type Indicator]: http://en.wikipedia.org/wiki/Myers-Briggs_Type_Indicator_(MBTI) "Wikipedia: Myers-Briggs Type Indicator"
+[Keirsey Temperament Sorter]: http://en.wikipedia.org/wiki/Keirsey_Temperament_Sorter "Wikipedia: Keirsey Temperament Sorter"
