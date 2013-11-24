@@ -12,18 +12,18 @@ An *opinion* is a small data structure suitable for the capture and exchange of 
 - PGP-style levels of trust in various cryptographic keys,
 - etc.
 
-The majority of development notes are captured in DESIGN.md in this directory.
+The majority of development notes are captured in [DESIGN.md][] in this directory.
 
 This is a project toward the development of:
 
 - first, an open specification for opinion exchange, and
-- second, various reference implementations of software which conform to that specification.
+- second, various reference implementations of software which conform to that specification and demonstrate how to use and manage opinion data.
 
-The primary goal for this project will be acceptance of the specification as an [IETF Internet-Draft][] and its eventual publication as an [Internet RFC][].
+The author aims to create a specification suitable for acceptance as an [IETF Internet-Draft][] and eventual publication as an [Internet RFC][].
 
 ## Versions
 
-In January 2012 this project was forked (by me, as the sole author) at commit `7680ead` and improved in secrecy. I am presently inquiring about getting those improvements open-sourced and merged back into this repository. Until then, this project will move forward from the point it existed prior to January 2012.
+In January 2012 this project was forked (by me, as the sole author) at commit `7680ead` and improved in secrecy as part of my employer's "20% time." Some or all of that will eventually be merged back into this repository, pending their appoval. Until then, this project will move forward from the point it existed prior to January 2012.
 
 ## Licenses
 
@@ -36,3 +36,4 @@ All source code for software herein is licensed under the terms of the [GNU Affe
 [likert]: https://en.wikipedia.org/wiki/Likert_scale
 [IETF Internet-Draft]: http://www.ietf.org/id-info/
 [Internet RFC]: http://www.ietf.org/rfc.html
+[DESIGN.md]: DESIGN.md
