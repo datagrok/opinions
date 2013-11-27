@@ -1,10 +1,12 @@
 This document serves to record the rationale behind decisions made during the design of this system.
 
+The opinions specification will be compiled in a separate document.
+
 # A Distributed Network of Metrics
 
 Various pieces of software, in the form of applications and web services, collect opinions. 
 
-- Reddit and Digg collect opinions about URLs in the form of up- or down-votes. They also collect opinions about comments made in their comment system in the same way. Slashdot has a slightly more granular metric but is essentially the same.
+- Reddit and Digg collect opinions about URLs in the form of up- or down-votes. They also collect opinions about comments made in their comment system in the same way. Slashdot's comment system has a slightly more granular metric but is essentially the same.
 
 - Google Plus and Facebook collect opinions about URLs in the form of "Like"s or "+1"s.
 
@@ -12,7 +14,11 @@ Various pieces of software, in the form of applications and web services, collec
 
 - OkCupid collects opinions in the form of responses to an open-ended database of multiple-choice questions.
 
-- Most opinion surveys may ask responders to rate their agreement according to a [Likert scale][] of "Disagree" vs. "Neither Agree nor Disagree" vs. "Agree."
+- Most opinion surveys may ask responders to rate their agreement according to a [Likert scale][] of "Disagree" to "Agree," with "Neither Agree nor Disagree" in between.
+
+All of these sites perform a calculation employing opinion data to provide recommendations to their users, to segment or "cluster" their users into groups by similarity, to describe the nature of their subscribers in aggregate, and various other things.
+
+However, none of them share their raw data with each other, or with their users.
 
 ## Problems we try to solve
 
@@ -20,15 +26,17 @@ Various pieces of software, in the form of applications and web services, collec
 
 Guilty: Reddit, Digg, Slashdot, Google Plus, Facebook and almost every other "social" site ever created.
 
-Many users may rank as "good" articles or statements whose opinions they agree with, regardless of their quality. Is an article informative but poorly-written? Exciting but poorly researched? Does a particular movie have a great story but horrible acting?
+Many users up-vote articles or statements whose opinions they agree with, regardless of their quality. If they represent the majority of users on a site, then effectively the site's metric for "good" becomes: "do you agree?"
+
+Is an article informative but poorly-written? Exciting but poorly researched? Does a particular movie have a great story but horrible acting? With only one metric for "good" these opinions cannot be captured or calculated.
 
 ### Extremely naive algorithm (popular vote) for calculating score from "goodness" metric.
 
 Guilty: Reddit, Digg, Slashdot, Google Plus, Facebook, etc...
 
-For these sites, as their communities get larger, minority interests and opinions become excluded. The winningest content is that with the most votes, even if less-generally-popular content is highly desirable to a subset of the users. The site "descends into mediocrity."
+For these sites, as their communities get larger, minority interests and opinions become excluded. The marginalized, whose greatest champion for community-building should be the Internet, are ignored. The winningest content is that with the most votes, even if less-generally-popular content is highly desirable to a subset of the users. The site "descends into mediocrity."
 
-I want a social news site where both a religious neo-conservative Republican and a far-left liberal pacifist atheist socialist can find recommended to them links that they would consider "good" and comments that they would not necessarily agree with, but would consider on-topic and/or well-informed.
+I want a social news site where both a religious neo-conservative Republican and a far-left liberal pacifist atheist socialist can both find recommended to them links that they would consider "good" and comments that they would not necessarily agree with, but consider to be on-topic and/or well-informed.
 
 ### Limited to a single topic.
 
@@ -58,13 +66,15 @@ Reddit [takes great pains to insist](http://www.reddit.com/help/reddiquette) tha
 
 Guilty: Facebook and Google Plus
 
-Many social media sites and pundits insist that one must use their real name in their online persona. At the very least, this is an assault on the freedoms of speech and expression.
+Many social media sites and pundits insist that one must use their "real" Government-associated name in their online persona. At the very least, this is an assault on the freedoms of speech and expression, and [disenfranchises the marginalized][real names policy].
 
-Strong PGP-style cryptography is a sufficent solution to this problem. Implemented with a PKI and signatures, it enables avatars to earn reputation, discouraging and enabling others to filter away "throwaway" avatars, while providing plausible deniability and protecting users.
+Strong PGP-style cryptography coupled with a decentralized system for reputation is a sufficent solution to this problem. Implemented with a PKI and signatures, it enables avatars to earn reputation, discouraging the creation of and enabling others to preemptively filter out "throwaway" avatars, while providing plausible deniability (in one sense) and protecting users.
 
 [JWZ on Nym Wars](http://www.jwz.org/blog/2011/08/nym-wars/)
 
+[real names policy]: http://geekfeminism.wikia.com/wiki/Who_is_harmed_by_a_%22Real_Names%22_policy%3F "GFW: Who is harmed by a 'real names' policy?"
 [Nymwars]: http://en.wikipedia.org/wiki/Nymwars "Wikipedia: Nymwars"
+
 
 ## Toward a solution
 
@@ -126,15 +136,18 @@ TODO: check my crypto textbooks: is it safe to omit the Principal from the signa
 
 ## Use cases / stories
 
+### An attack-resistant distributed system for secure pseudonymous reputation 
+
 ## Proof-of-concept implementation goals (?)
 
 - Protocol description
-	- Driven by proof-of-concept implementation -- decisions in protocol should
-	  be resolved in favor of what makes for the easiest implementation.
+    - Driven by proof-of-concept implementation -- decisions in protocol should
+      be resolved in favor of what makes for the easiest implementation without
+      sacrificing security.
 - Libraries for manipulating and exchanging opinion data in Python (and C?)
+- An opinions aggregation and distribution service
 - A social-news site founded on opinion data
 - A simple movie rankings database founded on opinion data
-- An opinions aggregation and distribution service
 - Clients might be seeded with a set of good or popular Metrics
 	- Movies
 	- MetaMetrics -- "This metric is unbiased" "This metric is generally useful" etc.
@@ -166,6 +179,7 @@ FIXME further study and elaboration. Possible of opinions to build on the existi
 - Timestamps could be TAI64; 64 bits.
 - Maps from hash values to URIs could live in any key-value store.
 - For the protocol design we need not worry too much about storage details. But consider them anyway to avoid design mistakes.
+- Serialization of some data structure for encryption is critically important. Serialization for transmission over the wire is unimportant, but benefits from the existence of a standard.
 
 ### How do we selectively distribute opinions?
 
