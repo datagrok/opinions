@@ -261,3 +261,11 @@ We feel that is is rather premature to be worrying about "filter bubbles" when m
 [The Political Compass]: http://www.politicalcompass.org
 [Myers-Briggs Type Indicator]: http://en.wikipedia.org/wiki/Myers-Briggs_Type_Indicator_(MBTI) "Wikipedia: Myers-Briggs Type Indicator"
 [Keirsey Temperament Sorter]: http://en.wikipedia.org/wiki/Keirsey_Temperament_Sorter "Wikipedia: Keirsey Temperament Sorter"
+
+# TODO
+- shorten titles
+- include [Article Feedback Tool]
+- johnny ccan't encrypt: what to do about the UI
+- consideration of internationalization. merge metrics?
+
+[Article Feedback Tool]: http://en.wikipedia.org/wiki/Wikipedia:Article_Feedback_Tool "Wikipedia: Article Feedback Tool"
