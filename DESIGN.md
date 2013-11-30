@@ -95,45 +95,45 @@ Opinions like:
 
 More specifically, let's create a protocol for the exchange of abstract opinion data, and a couple proof-of-concept applications that can speak that protocol.
 
-Opinions are described by a scalar rating according to some _metric_. Metrics could be anything; let's not limit them. Let's simply say that a metric is a description of the scale used by the scalar. Things could be anything; real things, web sites, people, avatars or public keys that represent people, etc.
+Opinions are described by a scalar rating according to some _metric_. Metrics could be anything; let's not limit them. Let's simply say that a metric is a description of the scale used by the scalar. Targets could be anything; real things, web sites, people, avatars or public keys that represent people, etc.
 
-	(Thing, Metric, Rating)
+	(Target, Metric, Rating)
 
-It should be possible to convey someone else's opinion, so we need to inlcude the Principal (the "I" in "I think _Thing_ has a rating of _Rating_ according to _Metric_".)
+It should be possible to convey someone else's opinion, so we need to inlcude the Avatar (the "I" in "I think _Target_ has a rating of _Rating_ according to _Metric_".)
 
-	(Principal, Thing, Metric, Rating)
+	(Avatar, Target, Metric, Rating)
 
 
-Particular Things and Metrics may become very popular. (Consider hit movies, virally popular internet content. Also consider very well-worded and general Metrics which apply to many classes of Things.)
+Particular Targets and Metrics may become very popular. (Consider hit movies, virally popular internet content. Also consider very well-worded and general Metrics which apply to many classes of Targets.)
 
-To limit the amount of data we have to work with and defer decisions about ontology, we can store the full values for Principals, Things, and Metrics elsewhere and merely reference them from the opinion tuple. URIs might work well for this purpose.
+To limit the amount of data we have to work with and defer decisions about ontology, we can store the full values for Avatars, Targets, and Metrics elsewhere and merely reference them from the opinion tuple. URIs might work well for this purpose.
 
-But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes, so let's store the hash values of the content, not the URI, of Things and Metrics.
+But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes, so let's store the hash values of the content, not the URI, of Targets and Metrics.
 
-	(H(Principal), H(Thing), H(Metric), Rating)
+	(H(Avatar), H(Target), H(Metric), Rating)
 
 Clients will probably as a convenience provide a mapping of hash values to contents, or a description of how to obtain the contents (URIs should work well here.) This may however be outside the scope of the basic protocol.
 
 	URIs = {
-		H(Thing): "http://.../",
+		H(Target): "http://.../",
 		H(Metric): "http://.../",
-		H(Thing): "file://.../",
+		H(Target): "file://.../",
 		H(Metric): "...(actual metric data)...",
 	}
 
 Opinions may change over time, so let's include a timestamp.
 
-	(H(Principal), H(Thing), H(Metric), Rating, Time)
+	(H(Avatar), H(Target), H(Metric), Rating, Time)
 
 We want to allow for peers and aggregation services to distribute our opinions to others, but we wouldn't want an impostor to express fake opinions in our name. So, let's sign the data.
 
-A signature will not validate without the correct public key, so including the Principal in the signed data is redundant.
+A signature will not validate without the correct public key, so including the Avatar in the signed data is redundant.
 
 	Understanding that SIGNED(x) means (x, SIGNATURE(x)),
 
-	(H(Principal), SIGNED(H(Thing), H(Metric), Rating, Time))
+	(H(Avatar), SIGNED(H(Target), H(Metric), Rating, Time))
 
-TODO: check my crypto textbooks: is it safe to omit the Principal from the signature leave the signer out of the signed document?
+TODO: check my crypto textbooks: is it safe to omit the Avatar from the signature leave the signer out of the signed document?
 
 ## Use cases / stories
 
@@ -166,7 +166,7 @@ Opinion data entities are composed of subject-object-metric-value-signature, whe
 
 RDF data seems to be assumed to be factual; dealing with conflicting statements represented in RDF seems out-of-scope for the system. Authenticity seems to be out-of-scope as well. (FIXME I haven't actually read the specs, verify that I'm not completely making things up here.)
 
-Opinions are assumed to be just that: opinions, which may not be objective statements of truth. Thus it is important to bind opinions to the principals who issue them, and give consideration to how to present conflicting opinions.
+Opinions are assumed to be just that: opinions, which may not be objective statements of truth. Thus it is important to bind opinions to the Avatars who issue them, and give consideration to how to present conflicting opinions.
 
 - Opinions may(?) be encoded in RDF. (And many other data formats, as opinions are merely tuples. XML, RSS, HTML as a [MicroFormat][], etc.)
 
