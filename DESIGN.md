@@ -112,14 +112,21 @@ But we wouldn't want an opinion made about the content of a URI to remain valid 
 
 	(H(Avatar), H(Target), H(Metric), Rating)
 
-Clients will probably as a convenience provide a mapping of hash values to contents, or a description of how to obtain the contents (URIs should work well here.) This may however be outside the scope of the basic protocol.
+Clients will probably as a convenience provide a mapping of hash values to contents, and/or to descriptions of how to obtain the contents (URIs should work well here.) This may however be outside the scope of the basic protocol.
 
-	URIs = {
-		H(Target): "http://.../",
-		H(Metric): "http://.../",
-		H(Target): "file://.../",
-		H(Metric): "...(actual metric data)...",
-	}
+    {
+        references: {
+            H(Target): "http://.../",
+            H(Metric): "http://.../",
+            H(Target): "file://.../"
+        },
+        sources: {
+            H(Target): "...(raw target data)...",
+            H(Metric): "...(raw target data)..."
+        }
+    }
+
+Each Target, Metric, or Avatar might be sourced from multiple different URLs, including multiple different protocols. Mappings should be able to provide either a list of URLs per hash key, or repeat the hash key.
 
 Opinions may change over time, so let's include a timestamp.
 
