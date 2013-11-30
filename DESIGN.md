@@ -235,6 +235,20 @@ Many metrics will take on the form of a Likert item. From the Wikipedia article 
 - Hopefully the ability to create pseudononymous avatars will reduce the tendency for social desirability bias.
 - How do we deal with central tendency bias? Extra descriptive text that clearly defines the feeling one might have upon selecting a particular value?
 
+### What about echo chambers or "filter bubbles"?
+
+Opinion data forms the base upon which a recommendation engine may be built, to recommend content, stories, statements, or relationships.
+
+Some are concerned that recommending things that appeal to someone's interests forms an echo chamber, in which all media that a person consumes is that which they already agree with. It is bad to hide from opposing views.
+
+Since Opinions are fine-grained it becomes possible to evaluate content by more dimensions than simply "I agree." Having data available makes it possible to create recommendation algorithms that take into account not only agreement but also technical quality.
+
+We feel that is is rather premature to be worrying about "filter bubbles" when most of today's popular media sites contain poor implementations of recommendation engines. (If they feature them at all!)
+
+"Filter bubbles" may indeed become an issue in a future where opinoin data is available and sites make use of recommendations, but that does not undermine efforts to implement filtering and recommendation engines whatsoever. The solution to "filter bubbles" will be a minor adjustment to existing, good recommendation algorithms, and it should be user-configurable: "show highly-rated opposing views" should be a check-box on a configuration screen.
+
+[burst]: http://www.technologyreview.com/view/522111/how-to-burst-the-filter-bubble-that-protects-us-from-opposing-views/ "How to Burst the 'Filter Bubble' that Protects Us from Opposing Views"
+
 ## Related Reading
 
 - [Attack Resistant Trust Metrics, Raph Levien](http://www.levien.com/thesis/compact.pdf)
