@@ -23,7 +23,9 @@ The author aims to create a specification suitable for acceptance as an [IETF In
 
 ## Versions
 
-In January 2012 this project was forked (by me, as the sole author) at commit `7680ead` and improved in secrecy as part of my employer's "20% time." Some or all of that will eventually be merged back into this repository, pending their appoval. Until then, this project will move forward from the point it existed prior to January 2012.
+The earliest timestamp I can find in my notes for this idea is September 12, 2011. This repository was created September 17, 2011.
+
+In January 2012 this project was forked (by me, as the sole author) at commit `7680ead` and improved in secrecy as part of my employer's self-directed research program similar to [Google's famous "20% time."][google-20-time] Some or all of that research _should_ eventually be merged back into this repository, _pending their appoval_. Until then, this project will move forward from the point it existed prior to January 2012.
 
 ## Licenses
 
@@ -37,3 +39,4 @@ All source code for software herein is licensed under the terms of the [GNU Affe
 [IETF Internet-Draft]: http://www.ietf.org/id-info/
 [Internet RFC]: http://www.ietf.org/rfc.html
 [DESIGN.md]: DESIGN.md
+[google-20-time]: http://www.nytimes.com/2007/10/21/jobs/21pre.html
