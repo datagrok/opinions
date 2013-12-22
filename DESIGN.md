@@ -4,11 +4,15 @@ The opinions specification will be compiled in a separate document.
 
 # A Distributed Network of Metrics
 
-Various pieces of software, in the form of applications and web services, collect opinions. 
-
-- Reddit and Digg collect opinions about URLs in the form of up- or down-votes. They also collect opinions about comments made in their comment system in the same way. Slashdot's comment system has a slightly more granular metric but is essentially the same.
+Various pieces of software, in the form of applications and web services, collect opinions.
 
 - Google Plus and Facebook collect opinions about URLs in the form of "Like"s or "+1"s.
+
+- Reddit and Digg collect opinions about URLs in the form of up- or down-votes. They also collect opinions about comments made in their comment system in the same way.
+
+- Slashdot's comment system is essentially the same, employing an 11-category rating system, but the categories are mutually exclusive. [^slashdot]
+
+- Wikipedia's [Article Feedback Tool][] employs a four-category scalar rating system.
 
 - Amazon, NewEgg, and Netflix collect opinions about products or movies in the form of rankings between 1 to 5.
 
@@ -16,9 +20,21 @@ Various pieces of software, in the form of applications and web services, collec
 
 - Most opinion surveys may ask responders to rate their agreement according to a [Likert scale][] of "Disagree" to "Agree," with "Neither Agree nor Disagree" in between.
 
-All of these sites perform a calculation employing opinion data to provide recommendations to their users, to segment or "cluster" their users into groups by similarity, to describe the nature of their subscribers in aggregate, and various other things.
+- PGP includes a metric that allows one to assign a "trust level" and "trust amount" to some key being signed.[^pgp-trust]
 
-However, none of them share their raw data with each other, or with their users.
+All of these services collect opinion data to perform some calculation. Examples of these calcuations include:
+
+- providing recommendations to their users
+- segmenting or "clustering" users into groups by similarity, for the purpose of introductions, networking, or targeted advertising
+- describing the nature of their subscribers in aggregate
+
+However, none of the services share their raw data with each other, or with their users. Furthermore, none of the services share the algorithms they use to make their calculations. The opinion data we give to companies on the internet becomes locked into various data silos.
+
+We propose a general-purpose data format suitable for easy exchange of a wide variety of opinions. This enables:
+
+- decentralized networks where users may have more control over what opinions they share, and with whom
+- smarter, user-driven recommendation engines that might, for example, recommend Netflix movies based on one's Amazon purchases
+- sharing of opinion data between multiple sites, for example you might expose your movie ratings to both IMDB, Netflix, and Amazon without having to tediously click hundreds of ratings widgets on all three sites.
 
 ## Problems we try to solve
 
@@ -30,14 +46,17 @@ Is an article informative but poorly-written? Exciting but poorly researched? Do
 
 Guilty: Reddit, Digg, Slashdot, Google Plus, Facebook and almost every other "social" site ever created.
 
-### Extremely naive algorithm (popular vote) for calculating score from "goodness" metric.
+Solution: The Opinions data structure provides an abstract, extensible way to represent a metric. Metrics which are poorly-defined may be abandoned for better ones at the whim of the users. Users may form opinions about the Metrics themselves, represented by Opinion data structures.
 
+### Extremely naive algorithm (popular vote) for calculating score from "goodness" metric.
 
 For these sites, as their communities get larger, minority interests and opinions become excluded. The marginalized, whose greatest champion for community-building should be the Internet, are ignored. The winningest content is that with the most votes, even if less-generally-popular content is highly desirable to a subset of the users. The site "descends into mediocrity."
 
 I want a social news site where both a religious neo-conservative Republican and a far-left liberal pacifist atheist socialist can both find recommended to them links that they would consider "good" and comments that they would not necessarily agree with, but consider to be on-topic and/or well-informed.
 
 Guilty: Reddit, Digg, Slashdot, Google Plus, Facebook, etc...
+
+Solution: we do not specify an algorithm for calculating recommendations. Instead, we specify a format which allows users (and services) to collect and share opinion data, so they can do a variety of analytics against that data themselves.
 
 ### Limited to a single topic.
 
@@ -49,11 +68,15 @@ Netflix has a well-defined metric for "good" (albeit only one) and a famously go
 
 Guilty: OKCupid, Netflix
 
+Solution: All opinion data is representable by a common data structure, enabling algorithms to employ data from disparate sources.
+
 ### Proprietary, closed database
 
 In almost all of these systems, the data is locked up. We couldn't fix the problems or run our own calculation algorithms across it if we wanted to. If you spend an hour responding to an opinion survey, you have no ability to save those responses to answer similar questions on other or future surveys.
 
 Guilty: OKCupid, Netflix, Reddit, Digg, Slashdot, Google Plus, Facebook, ...
+
+Solution: We cannot stop services from closing their databases, but we can enable the creation of open ones. With popularity, services would have to adapt to what users prefer.
 
 ### Ambiguous metrics.
 
@@ -62,6 +85,8 @@ When using a public key cryptosystem like PGP, does "trust" mean "I am certain t
 Reddit [takes great pains to insist](http://www.reddit.com/help/reddiquette) that "The down [vote] is for comments that add nothing to the discussion." However, the downvote has a different meaning for articles. Many users simply ignore this advice, making it a perpetual source of contention and repetitous discussion.
 
 Guilty: PGP and other cryptosystems' metric of "trust." Reddit's "upvote."
+
+Solution: Metrics themselves may be as specific or general as users wish. Poorly-defined metrics may themselves gain a reputation for being so within the framework.
 
 ### The "real name" initiative, aka [Nymwars][]
 
@@ -74,8 +99,9 @@ Strong PGP-style cryptography coupled with a decentralized system for reputation
 [real names policy]: http://geekfeminism.wikia.com/wiki/Who_is_harmed_by_a_%22Real_Names%22_policy%3F "GFW: Who is harmed by a 'real names' policy?"
 [Nymwars]: http://en.wikipedia.org/wiki/Nymwars "Wikipedia: Nymwars"
 
-
 Guilty: Facebook and Google Plus
+
+Solution: we provide a framwork wherein _identity_ is synonymous with _public key_; users are encouraged to create many of them.
 
 ## Toward a solution
 
@@ -99,26 +125,34 @@ Opinions are described by a scalar rating according to some _metric_. Metrics co
 
 	(Target, Metric, Rating)
 
-It should be possible to convey someone else's opinion, so we need to inlcude the Avatar (the "I" in "I think _Target_ has a rating of _Rating_ according to _Metric_".)
+It should be possible to convey someone else's opinion, so we need to inlcude the Avatar (the "I" in "_I_ think _Target_ has a rating of _Rating_ according to _Metric_".)
 
 	(Avatar, Target, Metric, Rating)
 
-
 Particular Targets and Metrics may become very popular. (Consider hit movies, virally popular internet content. Also consider very well-worded and general Metrics which apply to many classes of Targets.)
 
-To limit the amount of data we have to work with and defer decisions about ontology, we can store the full values for Avatars, Targets, and Metrics elsewhere and merely reference them from the opinion tuple. URIs might work well for this purpose.
+To limit the amount of data we have to work with and defer decisions about ontology, we can store the full values for Avatars, Targets, and Metrics elsewhere and merely reference them from the opinion tuple.
 
-But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes, so let's store the hash values of the content, not the URI, of Targets and Metrics.
+At first glance, we might think URIs would work well for this purpose. But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes, so let's store instead the hash values of the content, not the URI, of Targets and Metrics.
 
 	(H(Avatar), H(Target), H(Metric), Rating)
 
-Clients will probably as a convenience provide a mapping of hash values to contents, and/or to descriptions of how to obtain the contents (URIs should work well here.) This may however be outside the scope of the basic protocol.
+This decision offers some advantages and requries us to make some concessions:
+
+One advantage is that referring to data by its hash value makes it a perfect candidate for storage in one of many high-performance Content Addressable Storage (CAS) systems like [Venti][], a homegrown CAS like the one that `git` employs, or simple implementation within other storage systems like postgres or a NoSQL engine.
+
+Another advantage is that the values for any given hash never change, enabling simple and agrgessive caching techniques.
+
+A concession that we might have to make when we discuss storage in high-performance distributed CAS systems is that the notion of copyright will require some interpretation. We have strong signatures to provide authenticity, but users of this system should assume that content will be aggressively cached and distributed widely, automatically. If one's ability to publish text depends on revenue from advertising that accompanies it, different schemes may have to be employed than "everyone may read content only after retrieving it from my servers, wrapped in advertisements."
+
+Clients will probably as a convenience provide a mapping of hash values to contents, and/or to descriptions of one or more means to obtain the contents (URIs should work well here.) This may however be outside the scope of the basic protocol. Each Target, Metric, or Avatar might be sourced from multiple different URLs, including multiple different protocols. Mappings should be able to provide either a list of URLs per hash key, or repeat the hash key.
 
     {
         references: {
-            H(Target): "http://.../",
-            H(Metric): "http://.../",
-            H(Target): "file://.../"
+            H(Target): ["http://.../", "ftp://.../"],
+            H(Metric): ["https://.../", ...],
+            H(Target): ["magnet:...", ...],
+            H(Avatar): ["http://pgp.mit.edu/pks/lookup?op=get&search=0x0F865001024EA507", ...],
         },
         sources: {
             H(Target): "...(raw target data)...",
@@ -126,7 +160,13 @@ Clients will probably as a convenience provide a mapping of hash values to conte
         }
     }
 
-Each Target, Metric, or Avatar might be sourced from multiple different URLs, including multiple different protocols. Mappings should be able to provide either a list of URLs per hash key, or repeat the hash key.
+Clients SHOULD, upon encountering a previously unknown hash,
+
+1. endeavor to obtain the value for that hash by various means,
+2. keep a local cache of the discovered value, and
+3. redistribute the discovered value to the network.
+
+All of those operations should be performed, or omitted, according to policies configurable by the user. These policies may interface with a trust system so that, for example, the client will attempt to retrieve values from trusted peers with high bandwidth sooner than it will from untrusted ones with low bandwidth.
 
 Opinions may change over time, so let's include a timestamp.
 
@@ -134,17 +174,13 @@ Opinions may change over time, so let's include a timestamp.
 
 We want to allow for peers and aggregation services to distribute our opinions to others, but we wouldn't want an impostor to express fake opinions in our name. So, let's sign the data.
 
-A signature will not validate without the correct public key, so including the Avatar in the signed data is redundant.
+Depending on the signature scheme, it may be redundant to include `H(Avatar)`[^pgp-redundant-avatar]
 
-	Understanding that SIGNED(x) means (x, SIGNATURE(x)),
-
-	(H(Avatar), SIGNED(H(Target), H(Metric), Rating, Time))
-
-TODO: check my crypto textbooks: is it safe to omit the Avatar from the signature leave the signer out of the signed document?
+	(H(Avatar), H(Target), H(Metric), Rating, Time, SIGNATURE(H(Avatar), H(Target), H(Metric), Rating, Time))
 
 ## Use cases / stories
 
-### An attack-resistant distributed system for secure pseudonymous reputation 
+### An attack-resistant distributed system for secure pseudonymous reputation
 
 ## Proof-of-concept implementation goals (?)
 
@@ -271,8 +307,12 @@ We feel that is is rather premature to be worrying about "filter bubbles" when m
 
 # TODO
 - shorten titles
-- include [Article Feedback Tool]
 - johnny ccan't encrypt: what to do about the UI
 - consideration of internationalization. merge metrics?
 
 [Article Feedback Tool]: http://en.wikipedia.org/wiki/Wikipedia:Article_Feedback_Tool "Wikipedia: Article Feedback Tool"
+[Venti]: http://en.wikipedia.org/wiki/Venti
+
+[^pgp-trust]: OpenPGP defines a metric for trust in RFC4880 §5.2.3.13, but it is rarely exposed to users as it is difficult to understand, and can easily be conflated with various meanings of the phrase "trust a key." If A signs B's key and I trust that A is who they say they are, does that mean B is who they say they are?
+[^pgp-redundant-avatar]: Depending on the signature scheme we choose, the signature key ID may be equivalent to `H(Avatar)`, and may be already included in the notion of "signing" some data. For example, OpenPGP RPC4880 §5.2.3.5 defines an "Issuer" signature subpacket which is the eight-octet OpenPGP key ID. If present, we need not encode it twice. However: it is entirely valid to sign an opinion structure at a different time than it applies to, so it is entirely valid to include our timestamp even though OpenPGP defines in §5.2.3.4 a "Signature Creation Time" mandatory signature subpacket.
+
