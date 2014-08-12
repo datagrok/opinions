@@ -1,6 +1,6 @@
 # A Distributed Network of Metrics
 
-An *opinion* is a small data structure suitable for the capture and exchange of data like:
+An *opinion* is a small data structure suitable for the capture and decentralized exchange of data like:
 
 - Facebook-style "likes" for a topic, statement, business, or URL,
 - Reddit-style "upvotes" on a news articles and other URLs,
@@ -12,12 +12,14 @@ An *opinion* is a small data structure suitable for the capture and exchange of 
 - PGP-style levels of trust in various cryptographic keys,
 - etc.
 
+We capture this data in such a way that it is difficult to forge, easy for end-users to extend to suit their own purposes, and may be easily processed by recommendation engines.
+
 The majority of development notes are captured in [DESIGN.md][] in this directory.
 
 This is a project toward the development of:
 
-- first, an open specification for opinion exchange, and
-- second, various reference implementations of software which conform to that specification and demonstrate how to use and manage opinion data.
+1. an open specification for opinion exchange, and
+2. various reference implementations of software which conform to that specification and demonstrate how to use and manage opinion data.
 
 The author aims to create a specification suitable for acceptance as an [IETF Internet-Draft][] and eventual publication as an [Internet RFC][].
 
@@ -25,7 +27,7 @@ The author aims to create a specification suitable for acceptance as an [IETF In
 
 The earliest timestamp I can find in my notes for this idea is September 12, 2011. This repository was created September 17, 2011.
 
-In January 2012 this project was forked (by me, as the sole author) at commit `7680ead` and improved in secrecy as part of my employer's self-directed research program similar to [Google's famous "20% time."][google-20-time] Some or all of that research _should_ eventually be merged back into this repository, _pending their appoval_. Until then, this project will move forward from the point it existed prior to January 2012.
+In January 2012 this project was forked (by me, as the sole author) at commit `7680ead` and improved in secrecy as part of my employer's self-directed research program, similar to [Google's famous "twenty percent time."][google-20-time] I have been waiting for more than two years for approval to release that work. Until then this project will move forward from the point it existed prior to January 2012. I expect that I will end up re-implementing in my own time all of the research I did once already.
 
 ## Licenses
 

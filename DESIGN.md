@@ -201,17 +201,51 @@ Depending on the signature scheme, it may be redundant to include `H(Avatar)`[^p
 
 ## Questions
 
+### What is the data format over the wire?
+
+- Encodings don't really matter, except that we have a standard one that is easy to implement in many different languages. I feel the W3C wastes inordinant amount of time bikeshedding over schemas, attributes, and representation of data as XML without focusing enough on the abstract structure of the data itself. For opinions, any data encoding should be acceptable which:
+    - Captures all the fields
+    - Is 
+- Opinions may(?) be encoded in RDF. (And many other data formats, as opinions are merely tuples. XML, RSS, HTML as a [MicroFormat][], etc.)
+
 ### Similarities and differences with RDF
 
 RDF data entities (called RDF "triples") are composed of subject-predicate-object, like "Bob is 35 (years old)" or "Bob knows Fred."
 
-Opinion data entities are composed of subject-object-metric-value-signature, where subject is implied and always "I". It may be possible to procedurally encode Opinions into RDF, perhaps for storage into a high-performance [Triplestore][].
+RDF data seems to be assumed to be _factual_; dealing with conflicting statements represented in RDF seems out-of-scope for the system. Opinion data is assumed to be _subjective_, and conflicting statements are expected. Authenticity in RDF seems to be out-of-scope as well, while all Opinion tuples are signed. (FIXME TODO _I haven't actually read the specs, must verify that I'm not completely making things up here._)
 
-RDF data seems to be assumed to be factual; dealing with conflicting statements represented in RDF seems out-of-scope for the system. Authenticity seems to be out-of-scope as well. (FIXME I haven't actually read the specs, verify that I'm not completely making things up here.)
+Opinion data entities are composed of subject-object-metric-value-signature, where subject is always "I." It may be possible, depending on the metric used, to represent (some) Opinions as (a set of) RDF, but the goals of each format differ too much for a procedural transformation. For example, opinions with this metric are straightforward:
 
-Opinions are assumed to be just that: opinions, which may not be objective statements of truth. Thus it is important to bind opinions to the Avatars who issue them, and give consideration to how to present conflicting opinions.
+    Opinions:
+        avatar: Bob
+        target: Fred
+        metric: is a friend of mine
+        rating: 100%
+        signed: Bob
 
-- Opinions may(?) be encoded in RDF. (And many other data formats, as opinions are merely tuples. XML, RSS, HTML as a [MicroFormat][], etc.)
+    RDF:
+        subject: Bob
+        predicate: is friends with
+        object: Fred
+
+However, other opinions may be difficult to represent as RDF. Likert-scale opinions would require some contortions to represent both object and rating in RDF format.
+
+    Opinions:
+        avatar: Bob
+        target: "free markets are the best economic policy"
+        metric: "agrees with this political statement (Likert scale with 0% = disagree, 100% = agree)"
+        rating: 50%
+        signed: Bob
+        
+    RDF:
+        subject: Bob
+        object: "free markets are the best economic policy"
+        predicate: "has an opinion about"
+
+        subject: The URL to the above RDF tuple
+        predicate: "the tuple has a value of"
+        object: 50%
+
 
 FIXME further study and elaboration. Possible of opinions to build on the existing mountain of RDF work without embracing its complexity and giant specifications?
 
@@ -314,5 +348,6 @@ We feel that is is rather premature to be worrying about "filter bubbles" when m
 [Venti]: http://en.wikipedia.org/wiki/Venti
 
 [^pgp-trust]: OpenPGP defines a metric for trust in RFC4880 §5.2.3.13, but it is rarely exposed to users as it is difficult to understand, and can easily be conflated with various meanings of the phrase "trust a key." If A signs B's key and I trust that A is who they say they are, does that mean B is who they say they are?
+
 [^pgp-redundant-avatar]: Depending on the signature scheme we choose, the signature key ID may be equivalent to `H(Avatar)`, and may be already included in the notion of "signing" some data. For example, OpenPGP RPC4880 §5.2.3.5 defines an "Issuer" signature subpacket which is the eight-octet OpenPGP key ID. If present, we need not encode it twice. However: it is entirely valid to sign an opinion structure at a different time than it applies to, so it is entirely valid to include our timestamp even though OpenPGP defines in §5.2.3.4 a "Signature Creation Time" mandatory signature subpacket.
 
