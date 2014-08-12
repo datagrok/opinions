@@ -6,20 +6,13 @@ The opinions specification will be compiled in a separate document.
 
 Various pieces of software, in the form of applications and web services, collect opinions.
 
-- Google Plus and Facebook collect opinions about URLs in the form of "Like"s or "+1"s.
-
+- Facebook and Google Plus "Like"s or "+1"s about URLs, statements, individuals, or companies.
 - Reddit and Digg collect opinions about URLs in the form of up- or down-votes. They also collect opinions about comments made in their comment system in the same way.
-
-- Slashdot's comment system is essentially the same, employing an 11-category rating system, but the categories are mutually exclusive. [^slashdot]
-
+- Slashdot's comment system is essentially the same, employing an 11-category rating system, but the categories are mutually exclusive.
 - Wikipedia's [Article Feedback Tool][] employs a four-category scalar rating system.
-
-- Amazon, NewEgg, and Netflix collect opinions about products or movies in the form of rankings between 1 to 5.
-
+- Amazon, NewEgg, Netflix, and Yelp collect opinions about products, movies, or restaurants in the form of rankings from 1 to 5.
 - OkCupid collects opinions in the form of responses to an open-ended database of multiple-choice questions.
-
 - Most opinion surveys may ask responders to rate their agreement according to a [Likert scale][] of "Disagree" to "Agree," with "Neither Agree nor Disagree" in between.
-
 - PGP includes a metric that allows one to assign a "trust level" and "trust amount" to some key being signed.[^pgp-trust]
 
 All of these services collect opinion data to perform some calculation. Examples of these calcuations include:
@@ -36,6 +29,18 @@ We propose a general-purpose data format suitable for easy exchange of a wide va
 - smarter, user-driven recommendation engines that might, for example, recommend Netflix movies based on one's Amazon purchases
 - sharing of opinion data between multiple sites, for example you might expose your movie ratings to both IMDB, Netflix, and Amazon without having to tediously click hundreds of ratings widgets on all three sites.
 
+Examples of opinions that we might capture include:
+
+- "This news article is misleading."
+- "I'd give this movie a four-star rating."
+- "I am mostly certain of the authenticity of the public key for Alice."
+- "This restaurant has great food."
+- "This restaurant has terrible service."
+- "This restaurant has decent prices."
+- "I think a government should tax minimally and stay out of people's affairs."
+- "I think a government should provide free health care for its citizens."
+- "This Opinion _Metric_ is well-worded."
+
 ## Problems we try to solve
 
 ### Only one metric for "good"
@@ -50,7 +55,7 @@ Solution: The Opinions data structure provides an abstract, extensible way to re
 
 ### Extremely naive algorithm (popular vote) for calculating score from "goodness" metric.
 
-For these sites, as their communities get larger, minority interests and opinions become excluded. The marginalized, whose greatest champion for community-building should be the Internet, are ignored. The winningest content is that with the most votes, even if less-generally-popular content is highly desirable to a subset of the users. The site "descends into mediocrity."
+For many opinion-collecting sites, as their communities get larger, minority interests become excluded. The marginalized, whose greatest champion for community-building should be the Internet, are ignored. The winningest content is that with the most votes, even if less-generally-popular content is highly desirable to a subset of the users. The site "descends into mediocrity."
 
 I want a social news site where both a religious neo-conservative Republican and a far-left liberal pacifist atheist socialist can both find recommended to them links that they would consider "good" and comments that they would not necessarily agree with, but consider to be on-topic and/or well-informed.
 
@@ -107,25 +112,15 @@ Solution: we provide a framwork wherein _identity_ is synonymous with _public ke
 
 Let's create a system that can collect opinions about things while solving those problems.
 
-Opinions like:
+More specifically, let's create a protocol for the exchange of abstract opinion data, and a proof-of-concept application that can speak that protocol.
 
-- This news article is misleading.
-- I'd give this movie a four-star rating.
-- I am mostly certain of the authenticity of the public key for Alice.
-- This restaurant has great food.
-- This restaurant has terrible service.
-- This restaurant has decent prices.
-- I think a government should tax minimally and stay out of people's affairs.
-- I think a government should provide free health care for its citizens.
-- This metric is well-worded.
-
-More specifically, let's create a protocol for the exchange of abstract opinion data, and a couple proof-of-concept applications that can speak that protocol.
+For opinion data to be general-purpose and easily compatible with recommendation engines and clustering algorithms, we should optimally represent them as a single scalar value. But not all opinions conform to a single type of scalar, so we also define a metric to describe exactly how to interpret the scalar.
 
 Opinions are described by a scalar rating according to some _metric_. Metrics could be anything; let's not limit them. Let's simply say that a metric is a description of the scale used by the scalar. Targets could be anything; real things, web sites, people, avatars or public keys that represent people, etc.
 
 	(Target, Metric, Rating)
 
-It should be possible to convey someone else's opinion, so we need to inlcude the Avatar (the "I" in "_I_ think _Target_ has a rating of _Rating_ according to _Metric_".)
+It should be possible to convey someone else's opinion, so we need to include the Avatar (the "I" in "_I_ think _Target_ has a rating of _Rating_ according to _Metric_".)
 
 	(Avatar, Target, Metric, Rating)
 
@@ -133,7 +128,9 @@ Particular Targets and Metrics may become very popular. (Consider hit movies, vi
 
 To limit the amount of data we have to work with and defer decisions about ontology, we can store the full values for Avatars, Targets, and Metrics elsewhere and merely reference them from the opinion tuple.
 
-At first glance, we might think URIs would work well for this purpose. But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes, so let's store instead the hash values of the content, not the URI, of Targets and Metrics.
+At first glance, we might think URIs would work well for this purpose. But we wouldn't want an opinion made about the content of a URI to remain valid if the content changes. So, let's store instead the hash values of the content, not the URIs, of Targets and Metrics.
+
+With a hash function _H_ that takes as input data of any length and outputs a fixed-length hash value, the resulting opinion tuple is now fixed-length:
 
 	(H(Avatar), H(Target), H(Metric), Rating)
 
