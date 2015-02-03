@@ -338,7 +338,7 @@ We feel that is is rather premature to be worrying about "filter bubbles" when m
 
 # TODO
 - shorten titles
-- johnny ccan't encrypt: what to do about the UI
+- johnny can't encrypt: what to do about the UI
 - consideration of internationalization. merge metrics?
 
 [Article Feedback Tool]: http://en.wikipedia.org/wiki/Wikipedia:Article_Feedback_Tool "Wikipedia: Article Feedback Tool"
