@@ -114,7 +114,7 @@ Let's create a system that can collect opinions about things while solving those
 
 More specifically, let's create a protocol for the exchange of abstract opinion data, and a proof-of-concept application that can speak that protocol.
 
-For opinion data to be general-purpose and easily compatible with recommendation engines and clustering algorithms, we should optimally represent them as a single scalar value. But not all opinions conform to a single type of scalar, so we also define a metric to describe exactly how to interpret the scalar.
+For opinion data to be general-purpose and easily compatible with recommendation engines and clustering algorithms, we should optimally represent them as a single scalar value. But not all opinions conform to a single type of scalar, so we also define a metric to describe exactly how to interpret the scalar. For consistency we will define the data type of the scalar to be an unsigned 32-bit integer; metrics may define a mapping from that range to and from its preferred range.
 
 Opinions are described by a scalar rating according to some _metric_. Metrics could be anything; let's not limit them. Let's simply say that a metric is a description of the scale used by the scalar. Targets could be anything; real things, web sites, people, avatars or public keys that represent people, etc.
 
@@ -132,11 +132,16 @@ At first glance, we might think URIs would work well for this purpose. But we wo
 
 With a hash function _H_ that takes as input data of any length and outputs a fixed-length hash value, the resulting opinion tuple is now fixed-length:
 
-	(H(Avatar), H(Target), H(Metric), Rating)
+	(
+        H(Avatar),
+        H(Target),
+        H(Metric),
+        Rating
+        )
 
 This decision offers some advantages and requries us to make some concessions:
 
-One advantage is that referring to data by its hash value makes it a perfect candidate for storage in one of many high-performance Content Addressable Storage (CAS) systems like [Venti][], a homegrown CAS like the one that `git` employs, or simple implementation within other storage systems like postgres or a NoSQL engine.
+One advantage is that referring to data by its hash value makes it a perfect candidate for storage in one of many high-performance Content Addressable Storage (CAS) systems. like [Venti][], a homegrown CAS like the one that `git` employs, new systems like [ipfs][] or simple implementation within other storage systems like postgres or a NoSQL engine.
 
 Another advantage is that the values for any given hash never change, enabling simple and agrgessive caching techniques.
 
@@ -165,7 +170,7 @@ Clients SHOULD, upon encountering a previously unknown hash,
 
 All of those operations should be performed, or omitted, according to policies configurable by the user. These policies may interface with a trust system so that, for example, the client will attempt to retrieve values from trusted peers with high bandwidth sooner than it will from untrusted ones with low bandwidth.
 
-Opinions may change over time, so let's include a timestamp.
+Opinions may change over time, and one may wish to describe an opinion as it was in the past, so let's include a timestamp representing "a time at which this opinion was held."
 
 	(H(Avatar), H(Target), H(Metric), Rating, Time)
 
@@ -173,7 +178,20 @@ We want to allow for peers and aggregation services to distribute our opinions t
 
 Depending on the signature scheme, it may be redundant to include `H(Avatar)`[^pgp-redundant-avatar]
 
-	(H(Avatar), H(Target), H(Metric), Rating, Time, SIGNATURE(H(Avatar), H(Target), H(Metric), Rating, Time))
+	(
+        H(Avatar),
+        H(Target),
+        H(Metric),
+        Rating,
+        Time,
+        SIGNATURE(
+                H(Avatar),
+                H(Target),
+                H(Metric),
+                Rating,
+                Time
+                )
+        )
 
 ## Use cases / stories
 
@@ -335,6 +353,7 @@ We feel that is is rather premature to be worrying about "filter bubbles" when m
 [The Political Compass]: http://www.politicalcompass.org
 [Myers-Briggs Type Indicator]: http://en.wikipedia.org/wiki/Myers-Briggs_Type_Indicator_(MBTI) "Wikipedia: Myers-Briggs Type Indicator"
 [Keirsey Temperament Sorter]: http://en.wikipedia.org/wiki/Keirsey_Temperament_Sorter "Wikipedia: Keirsey Temperament Sorter"
+[ipfs]: http://ipfs.io/ "a global, versioned, peer-to-peer filesystem"
 
 # TODO
 - shorten titles

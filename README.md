@@ -19,9 +19,9 @@ The majority of development notes are captured in [DESIGN.md][] in this director
 This is a project toward the development of:
 
 1. an open specification for opinion exchange, and
-2. various reference implementations of software which conform to that specification and demonstrate how to use and manage opinion data.
+2. (a) software reference implementation(s) which conform to that specification
 
-The author aims to create a specification suitable for acceptance as an [IETF Internet-Draft][] and eventual publication as an [Internet RFC][].
+We aim to create an open specification suitable for acceptance as an [IETF Internet-Draft][] and eventual publication as an [Internet RFC][].
 
 ## Versions
 
