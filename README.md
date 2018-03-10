@@ -12,7 +12,7 @@ An *opinion* is a small data structure suitable for the capture and decentralize
 - PGP-style levels of trust in various cryptographic keys,
 - etc.
 
-We capture this data in such a way that it is difficult to forge, easy for end-users to extend to suit their own purposes, and may be easily processed by recommendation engines.
+The data is captured in such a way that it is difficult to forge, easy for end-users to extend to suit their own purposes, and may be easily processed by recommendation engines.
 
 The majority of development notes are captured in [DESIGN.md][] in this directory.
 
@@ -21,7 +21,7 @@ This is a project toward the development of:
 1. an open specification for opinion exchange, and
 2. (a) software reference implementation(s) which conform to that specification
 
-We aim to create an open specification suitable for acceptance as an [IETF Internet-Draft][] and eventual publication as an [Internet RFC][].
+I aim to create an open specification suitable for acceptance as an [IETF Internet-Draft][] and eventual publication as an [Internet RFC][].
 
 ## Versions
 
