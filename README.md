@@ -25,11 +25,12 @@ We aim to create an open specification suitable for acceptance as an [IETF Inter
 
 ## Versions
 
-The earliest timestamp I can find in my notes for this idea is September 12, 2011. This repository was created September 17, 2011.
+The earliest timestamp I can find in my notes for this idea is September 12, 2011.
+This repository was created September 17, 2011.
 
-In January 2012 this project was forked (by me, the sole author) at commit `7680ead` and improved in secrecy as part of my employer's self-directed research program, similar to [Google's famous "twenty percent time."][google-20-time] I expected that the result of that work could be easily merged back into this repository, but I was asked to wait to do so.
-
-I have been waiting for more than three years now for merge approval. Until I receive it, to avoid any potential for legal issues this project will move forward from the point it existed prior to January 2012. I expect that I will end up re-implementing in my own time all of the research I did once already.
+I worked briefly on a private fork of the project in January 2012 as part of a former employer's self-directed research program, based on commit `7680ead`.
+I was not granted permission to open-source it, and I later changed employers.
+To avoid any legal risk, I have discarded my copy of that fork.
 
 ## Licenses
 
@@ -43,4 +44,3 @@ All source code for software herein is licensed under the terms of the [GNU Affe
 [IETF Internet-Draft]: http://www.ietf.org/id-info/
 [Internet RFC]: http://www.ietf.org/rfc.html
 [DESIGN.md]: DESIGN.md
-[google-20-time]: http://www.nytimes.com/2007/10/21/jobs/21pre.html
